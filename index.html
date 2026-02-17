@@ -120,6 +120,82 @@
             margin-bottom: 30px;
         }
         
+        .mobile-only {
+            display: none;
+        }
+        
+        .desktop-only {
+            display: table;
+        }
+        
+        .mobile-comparison {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .mobile-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 2px solid #e9ecef;
+        }
+        
+        .mobile-card.highlight-card {
+            border: 3px solid #28a745;
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.2);
+        }
+        
+        .mobile-card-header {
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .mobile-card-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+            color: white;
+        }
+        
+        .mobile-card-body {
+            padding: 20px;
+        }
+        
+        .mobile-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .mobile-row:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.95em;
+        }
+        
+        .mobile-value {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.05em;
+            text-align: right;
+        }
+        
+        .mobile-value.highlight-text {
+            color: #28a745;
+            font-size: 1.1em;
+        }
+        
         .content {
             padding: 40px;
         }
@@ -353,6 +429,14 @@
                 padding: 10px;
             }
             
+            .desktop-only {
+                display: none !important;
+            }
+            
+            .mobile-only {
+                display: block;
+            }
+            
             header {
                 padding: 25px 20px;
             }
@@ -399,8 +483,27 @@
             
             .comparison-table {
                 font-size: 0.85em;
-                display: block;
-                overflow-x: auto;
+                display: none !important;
+            }
+            
+            .mobile-card-header h3 {
+                font-size: 1.2em;
+            }
+            
+            .mobile-card-body {
+                padding: 15px;
+            }
+            
+            .mobile-row {
+                padding: 10px 0;
+            }
+            
+            .mobile-label {
+                font-size: 0.9em;
+            }
+            
+            .mobile-value {
+                font-size: 1em;
             }
             
             .comparison-table th,
@@ -467,10 +570,31 @@
                 font-size: 1.6em;
             }
             
+            .mobile-card-header {
+                padding: 15px;
+            }
+            
+            .mobile-card-header h3 {
+                font-size: 1.1em;
+            }
+            
+            .mobile-card-body {
+                padding: 12px;
+            }
+            
+            .mobile-label, .mobile-value {
+                font-size: 0.85em;
+            }
+        }
+        
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .comparison-table {
+                font-size: 0.9em;
+            }
+            
             .comparison-table th,
             .comparison-table td {
-                font-size: 0.75em;
-                padding: 6px 3px;
+                padding: 12px 8px;
             }
         }
     </style>
@@ -523,7 +647,9 @@
             </div>
             
             <h2 style="color: #667eea; margin: 40px 0 20px 0;">📋 Detaljerad Jämförelse</h2>
-            <table class="comparison-table">
+            
+            <!-- Desktop/Tablet tabell -->
+            <table class="comparison-table desktop-only">
                 <thead>
                     <tr>
                         <th>Alternativ</th>
@@ -557,6 +683,84 @@
                     </tr>
                 </tbody>
             </table>
+            
+            <!-- Mobil-anpassade kort -->
+            <div class="mobile-comparison mobile-only">
+                <div class="mobile-card">
+                    <div class="mobile-card-header" style="background: #6c757d;">
+                        <h3>🔥 Fjärrvärme</h3>
+                        <span class="badge badge-current">NUVARANDE</span>
+                    </div>
+                    <div class="mobile-card-body">
+                        <div class="mobile-row">
+                            <span class="mobile-label">Installation:</span>
+                            <span class="mobile-value">-</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Årskostnad:</span>
+                            <span class="mobile-value">28 800 kr</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Besparing/år:</span>
+                            <span class="mobile-value">-</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Återbetalningstid:</span>
+                            <span class="mobile-value">-</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mobile-card highlight-card">
+                    <div class="mobile-card-header" style="background: #28a745;">
+                        <h3>💨 Luft-vatten</h3>
+                        <span class="badge badge-recommended">REKOMMENDERAD</span>
+                    </div>
+                    <div class="mobile-card-body">
+                        <div class="mobile-row">
+                            <span class="mobile-label">Installation:</span>
+                            <span class="mobile-value">80-130 tkr</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Årskostnad:</span>
+                            <span class="mobile-value">10-14 tkr</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Besparing/år:</span>
+                            <span class="mobile-value highlight-text">15-19 tkr</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Återbetalningstid:</span>
+                            <span class="mobile-value highlight-text">4-7 år</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mobile-card">
+                    <div class="mobile-card-header" style="background: #667eea;">
+                        <h3>⛰️ Bergvärme</h3>
+                        <span class="badge badge-premium">PREMIUM</span>
+                    </div>
+                    <div class="mobile-card-body">
+                        <div class="mobile-row">
+                            <span class="mobile-label">Installation:</span>
+                            <span class="mobile-value">120-180 tkr</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Årskostnad:</span>
+                            <span class="mobile-value">8-11 tkr</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Besparing/år:</span>
+                            <span class="mobile-value highlight-text">18-21 tkr</span>
+                        </div>
+                        <div class="mobile-row">
+                            <span class="mobile-label">Återbetalningstid:</span>
+                            <span class="mobile-value highlight-text">6-9 år</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <!-- Fjärrvärme -->
             <div class="option-card">
