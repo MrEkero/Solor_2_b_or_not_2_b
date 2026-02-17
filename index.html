@@ -70,6 +70,56 @@
             transform: translateY(0);
         }
         
+        .toggle-charts-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .toggle-charts-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .toggle-charts-btn:active {
+            transform: translateY(0);
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .chart-box {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        #chartsContainer {
+            transition: all 0.4s ease;
+            max-height: 0;
+            opacity: 0;
+        }
+        
+        #chartsContainer.show {
+            display: block !important;
+            max-height: 5000px;
+            opacity: 1;
+            margin-bottom: 30px;
+        }
+        
         .content {
             padding: 40px;
         }
@@ -299,8 +349,48 @@
         }
         
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            header {
+                padding: 25px 20px;
+            }
+            
             header h1 {
-                font-size: 1.8em;
+                font-size: 1.5em;
+            }
+            
+            header p {
+                font-size: 1em;
+            }
+            
+            .download-btn, .toggle-charts-btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+                width: 100%;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .intro {
+                padding: 20px;
+                font-size: 0.95em;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px;
+            }
+            
+            .chart-box {
+                padding: 15px;
+            }
+            
+            .chart-box h3 {
+                font-size: 1.1em;
             }
             
             .pros-cons {
@@ -308,12 +398,79 @@
             }
             
             .comparison-table {
-                font-size: 0.9em;
+                font-size: 0.85em;
+                display: block;
+                overflow-x: auto;
             }
             
             .comparison-table th,
             .comparison-table td {
-                padding: 10px;
+                padding: 8px 5px;
+                font-size: 0.85em;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .stat-box {
+                padding: 15px 10px;
+            }
+            
+            .stat-box .value {
+                font-size: 1.4em;
+            }
+            
+            .option-card {
+                padding: 20px;
+            }
+            
+            .option-card h3 {
+                font-size: 1.5em;
+                flex-wrap: wrap;
+            }
+            
+            .badge {
+                font-size: 0.45em;
+                margin-top: 5px;
+            }
+            
+            .recommendation {
+                padding: 25px 20px;
+            }
+            
+            .recommendation h2 {
+                font-size: 1.5em;
+            }
+            
+            .rec-item {
+                padding: 15px;
+            }
+            
+            footer {
+                padding: 20px;
+                font-size: 0.85em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.3em;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-box .value {
+                font-size: 1.6em;
+            }
+            
+            .comparison-table th,
+            .comparison-table td {
+                font-size: 0.75em;
+                padding: 6px 3px;
             }
         }
     </style>
@@ -334,7 +491,38 @@
                 <p>Denna jämförelse baseras på verklig förbrukning från en 190 kvm villa på Ekerö med nuvarande fjärrvärme från Solör Bioenergi. Årlig energiförbrukning: <strong>15,78 MWh</strong>. Nuvarande årskostnad: <strong>28 800 kr</strong>.</p>
             </div>
             
-            <h2 style="color: #667eea; margin-bottom: 20px;">📊 Snabbjämförelse</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                <h2 style="color: #667eea; margin: 0;">📊 Visuell Jämförelse</h2>
+                <button onclick="toggleCharts()" id="toggleChartsBtn" class="toggle-charts-btn">
+                    📈 Visa Grafer
+                </button>
+            </div>
+            
+            <div id="chartsContainer" style="display: none; overflow: hidden;">
+                <div class="charts-grid">
+                    <div class="chart-box">
+                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Installationskostnad</h3>
+                        <canvas id="installationChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-box">
+                        <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Årlig Driftkostnad</h3>
+                        <canvas id="annualCostChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-box" style="margin: 30px 0;">
+                    <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Total Ekonomi över 20 år</h3>
+                    <canvas id="totalSavingsChart"></canvas>
+                </div>
+                
+                <div class="chart-box" style="margin: 30px 0;">
+                    <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Ackumulerad Besparing över Tid</h3>
+                    <canvas id="savingsOverTimeChart"></canvas>
+                </div>
+            </div>
+            
+            <h2 style="color: #667eea; margin: 40px 0 20px 0;">📋 Detaljerad Jämförelse</h2>
             <table class="comparison-table">
                 <thead>
                     <tr>
@@ -567,8 +755,301 @@
         </footer>
     </div>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
+        let chartsCreated = false;
+        
+        function toggleCharts() {
+            const container = document.getElementById('chartsContainer');
+            const btn = document.getElementById('toggleChartsBtn');
+            
+            if (container.classList.contains('show')) {
+                container.classList.remove('show');
+                btn.innerHTML = '📈 Visa Grafer';
+            } else {
+                container.classList.add('show');
+                btn.innerHTML = '📊 Dölj Grafer';
+                
+                // Skapa grafer endast första gången
+                if (!chartsCreated) {
+                    setTimeout(createCharts, 100); // Vänta på animation
+                    chartsCreated = true;
+                }
+            }
+        }
+        
+        function createCharts() {
+            // Installationskostnad
+            const installationCtx = document.getElementById('installationChart').getContext('2d');
+            new Chart(installationCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fjärrvärme', 'Luft-vatten', 'Bergvärme'],
+                    datasets: [{
+                        label: 'Installationskostnad (kr)',
+                        data: [0, 105000, 150000],
+                        backgroundColor: [
+                            'rgba(108, 117, 125, 0.7)',
+                            'rgba(40, 167, 69, 0.7)',
+                            'rgba(255, 193, 7, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(108, 117, 125, 1)',
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(255, 193, 7, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: window.innerWidth < 768 ? 1 : 1.5,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('sv-SE') + ' kr';
+                                },
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Årlig driftkostnad
+            const annualCostCtx = document.getElementById('annualCostChart').getContext('2d');
+            new Chart(annualCostCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fjärrvärme', 'Luft-vatten', 'Bergvärme'],
+                    datasets: [{
+                        label: 'Årlig kostnad (kr)',
+                        data: [28800, 12000, 9500],
+                        backgroundColor: [
+                            'rgba(220, 53, 69, 0.7)',
+                            'rgba(40, 167, 69, 0.7)',
+                            'rgba(23, 162, 184, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(220, 53, 69, 1)',
+                            'rgba(40, 167, 69, 1)',
+                            'rgba(23, 162, 184, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: window.innerWidth < 768 ? 1 : 1.5,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString('sv-SE') + ' kr';
+                                },
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Total ekonomi över 20 år
+            const totalSavingsCtx = document.getElementById('totalSavingsChart').getContext('2d');
+            new Chart(totalSavingsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Fjärrvärme', 'Luft-vatten', 'Bergvärme'],
+                    datasets: [
+                        {
+                            label: 'Total kostnad',
+                            data: [576000, 345000, 340000],
+                            backgroundColor: 'rgba(220, 53, 69, 0.7)',
+                            borderColor: 'rgba(220, 53, 69, 1)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Installation',
+                            data: [0, 105000, 150000],
+                            backgroundColor: 'rgba(255, 193, 7, 0.7)',
+                            borderColor: 'rgba(255, 193, 7, 1)',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Drift (20 år)',
+                            data: [576000, 240000, 190000],
+                            backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: window.innerWidth < 768 ? 1 : 1.8,
+                    scales: {
+                        x: {
+                            stacked: false,
+                            ticks: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 9 : 12
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return (value/1000) + ' tkr';
+                                },
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Ackumulerad besparing över tid
+            const savingsOverTimeCtx = document.getElementById('savingsOverTimeChart').getContext('2d');
+            
+            // Beräkna ackumulerad besparing per år
+            const years = Array.from({length: 21}, (_, i) => i);
+            const luftVattenSavings = years.map(year => {
+                if (year === 0) return -105000; // Installation
+                return -105000 + (year * 16800); // Årlig besparing
+            });
+            const bergvarmeSavings = years.map(year => {
+                if (year === 0) return -150000; // Installation
+                return -150000 + (year * 19300); // Årlig besparing
+            });
+            
+            new Chart(savingsOverTimeCtx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'Luft-vatten vs Fjärrvärme',
+                            data: luftVattenSavings,
+                            borderColor: 'rgba(40, 167, 69, 1)',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Bergvärme vs Fjärrvärme',
+                            data: bergvarmeSavings,
+                            borderColor: 'rgba(102, 126, 234, 1)',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: window.innerWidth < 768 ? 1 : 2,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 10 : 12
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'År',
+                                font: {
+                                    size: window.innerWidth < 768 ? 11 : 14
+                                }
+                            },
+                            ticks: {
+                                font: {
+                                    size: window.innerWidth < 768 ? 9 : 11
+                                }
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Ackumulerad besparing (kr)',
+                                font: {
+                                    size: window.innerWidth < 768 ? 11 : 14
+                                }
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return (value/1000) + ' tkr';
+                                },
+                                font: {
+                                    size: window.innerWidth < 768 ? 9 : 11
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+        
         function downloadPDF() {
             const element = document.querySelector('.container');
             const opt = {
